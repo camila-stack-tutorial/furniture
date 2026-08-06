@@ -10,39 +10,30 @@ function toast(msg) {
 (async function () {
   let products = [];
   let settings = {};
-  let clerkToken = null;
+  let sessionToken = null;
   let currentRole = null; // 'senior' | 'staff' | null
 
   // ---------------- Auth gate ----------------
   async function initAuth() {
-    const demo = localStorage.getItem('woodora_demo_admin');
-    if (demo) {
-      currentRole = demo; // 'senior' in demo mode, so every tab is visible
-      document.getElementById('whoami').textContent = `Demo mode — signed in as ${demo} admin (no Clerk configured)`;
-      return true;
-    }
+    sessionToken = localStorage.getItem('woodora_token');
+    if (!sessionToken) { location.href = '/admin-login.html'; return false; }
 
-    const hasClerk = await new Promise(resolve => {
-      const t = setTimeout(() => resolve(false), 2500);
-      const iv = setInterval(() => { if (window.Clerk) { clearTimeout(t); clearInterval(iv); resolve(true); } }, 100);
+    const res = await fetch('/.netlify/functions/auth-me', {
+      headers: { Authorization: `Bearer ${sessionToken}` }
     });
 
-    if (!hasClerk) { location.href = '/admin-login.html'; return false; }
-
-    await window.Clerk.load();
-    if (!window.Clerk.user) { location.href = '/admin-login.html'; return false; }
-
-    clerkToken = await window.Clerk.session.getToken();
-    const res = await fetch('/.netlify/functions/staff', { headers: { Authorization: `Bearer ${clerkToken}` } });
-    const data = await res.json();
-    currentRole = data.self?.role || null;
-
-    if (!currentRole) {
-      document.getElementById('accessGate').style.display = 'block';
+    if (!res.ok) {
+      // Token missing/expired/revoked — clear it and send back to login.
+      localStorage.removeItem('woodora_token');
+      localStorage.removeItem('woodora_role');
+      localStorage.removeItem('woodora_email');
+      location.href = '/admin-login.html';
       return false;
     }
 
-    document.getElementById('whoami').textContent = `Signed in as ${window.Clerk.user.primaryEmailAddress?.emailAddress || 'admin'} · role: ${currentRole}`;
+    const data = await res.json();
+    currentRole = data.role;
+    document.getElementById('whoami').textContent = `Signed in as ${data.email} · role: ${currentRole}`;
     return true;
   }
 
@@ -53,10 +44,11 @@ function toast(msg) {
     document.querySelector('[data-tab="staff"]').style.display = 'none';
   }
 
-  document.getElementById('logoutBtn').addEventListener('click', async (e) => {
+  document.getElementById('logoutBtn').addEventListener('click', (e) => {
     e.preventDefault();
-    localStorage.removeItem('woodora_demo_admin');
-    if (window.Clerk?.user) await window.Clerk.signOut();
+    localStorage.removeItem('woodora_token');
+    localStorage.removeItem('woodora_role');
+    localStorage.removeItem('woodora_email');
     location.href = '/admin-login.html';
   });
 
@@ -254,35 +246,38 @@ function toast(msg) {
   // ---------------- Staff (senior admin only) ----------------
   async function loadStaff() {
     if (currentRole !== 'senior') return;
-    if (!clerkToken) {
-      document.getElementById('staffTbody').innerHTML = `<tr><td colspan="4">Staff approval requires Clerk to be configured (demo mode has no real accounts to approve).</td></tr>`;
-      return;
-    }
-    const res = await fetch('/.netlify/functions/staff', { headers: { Authorization: `Bearer ${clerkToken}` } });
+    const res = await fetch('/.netlify/functions/staff', { headers: { Authorization: `Bearer ${sessionToken}` } });
     const data = await res.json();
     const rows = (data.directory || []).map(d => `
       <tr>
         <td>${d.name || '—'}</td>
         <td>${d.email}</td>
-        <td>${new Date(d.requestedAt).toLocaleDateString()}</td>
+        <td>${d.status}</td>
+        <td>${d.role || '—'}</td>
         <td>
-          <button class="tag-btn" data-approve="${d.id}">Approve</button>
-          <button class="tag-btn" style="color:var(--danger);border-color:var(--danger)" data-revoke="${d.id}">Revoke</button>
+          ${d.status === 'pending' ? `<button class="tag-btn" data-approve="${d.id}">Approve</button>` : ''}
+          ${d.status === 'approved' ? `<button class="tag-btn" style="color:var(--danger);border-color:var(--danger)" data-revoke="${d.id}">Revoke</button>` : ''}
+          ${d.status === 'revoked' ? `<button class="tag-btn" data-approve="${d.id}">Re-approve</button>` : ''}
+          ${d.status === 'approved' && d.role === 'staff' ? `<button class="tag-btn" data-promote="${d.id}">Promote to senior</button>` : ''}
+          ${d.status === 'approved' && d.role === 'senior' ? `<button class="tag-btn" data-demote="${d.id}">Demote to staff</button>` : ''}
         </td>
       </tr>`).join('');
-    document.getElementById('staffTbody').innerHTML = rows || '<tr><td colspan="4">No staff sign-ins yet.</td></tr>';
+    document.getElementById('staffTbody').innerHTML = rows || '<tr><td colspan="5">No staff requests yet.</td></tr>';
 
     document.querySelectorAll('[data-approve]').forEach(b => b.addEventListener('click', () => setStaffRole(b.dataset.approve, 'approve')));
     document.querySelectorAll('[data-revoke]').forEach(b => b.addEventListener('click', () => setStaffRole(b.dataset.revoke, 'revoke')));
+    document.querySelectorAll('[data-promote]').forEach(b => b.addEventListener('click', () => setStaffRole(b.dataset.promote, 'promote')));
+    document.querySelectorAll('[data-demote]').forEach(b => b.addEventListener('click', () => setStaffRole(b.dataset.demote, 'demote')));
   }
 
   async function setStaffRole(userId, action) {
     const res = await fetch('/.netlify/functions/staff', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${clerkToken}` },
+      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${sessionToken}` },
       body: JSON.stringify({ userId, action })
     });
-    if (res.ok) { toast(action === 'approve' ? 'Staff approved' : 'Access revoked'); loadStaff(); }
+    const labels = { approve: 'Staff approved', revoke: 'Access revoked', promote: 'Promoted to senior', demote: 'Demoted to staff' };
+    if (res.ok) { toast(labels[action] || 'Updated'); loadStaff(); }
     else toast('Could not update — check Netlify Function logs');
   }
 })();

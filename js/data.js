@@ -2,7 +2,7 @@
    Tries the Netlify Function (real, shared, persisted backend) first.
    Falls back to the bundled JSON + a per-browser localStorage override
    so the whole site still works while previewing locally or before
-   the Netlify Function / Clerk pieces are wired up (see README). */
+   the Netlify Function / auth pieces are wired up (see README). */
 
 const WOODORA = (() => {
   const LS_PRODUCTS = 'woodora_products_override';
@@ -28,7 +28,7 @@ const WOODORA = (() => {
 
   async function saveProducts(products) {
     try {
-      const token = await getClerkToken();
+      const token = await getSessionToken();
       const res = await fetch('/.netlify/functions/products', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', ...(token ? { Authorization: `Bearer ${token}` } : {}) },
@@ -55,7 +55,7 @@ const WOODORA = (() => {
 
   async function saveSettings(settings) {
     try {
-      const token = await getClerkToken();
+      const token = await getSessionToken();
       const res = await fetch('/.netlify/functions/settings', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', ...(token ? { Authorization: `Bearer ${token}` } : {}) },
@@ -67,11 +67,8 @@ const WOODORA = (() => {
     return { ok: true, mode: 'local' };
   }
 
-  async function getClerkToken() {
-    try {
-      if (window.Clerk && window.Clerk.session) return await window.Clerk.session.getToken();
-    } catch (e) {}
-    return null;
+  async function getSessionToken() {
+    return localStorage.getItem('woodora_token');
   }
 
   // resolves data/ paths correctly whether page is at root or /admin/ etc.
