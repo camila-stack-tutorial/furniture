@@ -7,6 +7,16 @@
 <meta name="robots" content="noindex">
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/css/style.css">
+<style>
+  .pw-wrap{position:relative}
+  .pw-wrap input{width:100%;padding-right:44px;box-sizing:border-box}
+  .pw-toggle{
+    position:absolute;right:6px;top:50%;transform:translateY(-50%);
+    background:none;border:none;cursor:pointer;font-size:1.05rem;
+    line-height:1;padding:6px;opacity:.55;
+  }
+  .pw-toggle:hover{opacity:1}
+</style>
 </head>
 <body>
 <div class="login-shell">
@@ -19,7 +29,12 @@
 
       <form id="loginForm" style="margin-top:22px;text-align:left">
         <div class="form-row"><label>Email</label><input id="loginEmail" type="email" required autocomplete="username"></div>
-        <div class="form-row"><label>Password</label><input id="loginPassword" type="password" required autocomplete="current-password"></div>
+        <div class="form-row"><label>Password</label>
+          <div class="pw-wrap">
+            <input id="loginPassword" type="password" required autocomplete="current-password">
+            <button type="button" class="pw-toggle" data-target="loginPassword" aria-label="Show password">👁</button>
+          </div>
+        </div>
         <button class="btn btn-primary btn-block" type="submit">Sign in</button>
       </form>
 
@@ -37,7 +52,12 @@
       <form id="registerForm" style="margin-top:22px;text-align:left">
         <div class="form-row"><label>Full name</label><input id="regName" required autocomplete="name"></div>
         <div class="form-row"><label>Email</label><input id="regEmail" type="email" required autocomplete="username"></div>
-        <div class="form-row"><label>Password (min 8 characters)</label><input id="regPassword" type="password" minlength="8" required autocomplete="new-password"></div>
+        <div class="form-row"><label>Password (min 8 characters)</label>
+          <div class="pw-wrap">
+            <input id="regPassword" type="password" minlength="8" required autocomplete="new-password">
+            <button type="button" class="pw-toggle" data-target="regPassword" aria-label="Show password">👁</button>
+          </div>
+        </div>
         <button class="btn btn-primary btn-block" type="submit">Request access</button>
       </form>
 
@@ -52,6 +72,19 @@
   </div>
 </div>
 
+<script>
+(function () {
+  document.querySelectorAll('.pw-toggle').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const input = document.getElementById(btn.dataset.target);
+      const showing = input.type === 'text';
+      input.type = showing ? 'password' : 'text';
+      btn.textContent = showing ? '👁' : '🙈';
+      btn.setAttribute('aria-label', showing ? 'Show password' : 'Hide password');
+    });
+  });
+})();
+</script>
 <script>
 (function () {
   const loginView = document.getElementById('loginView');
