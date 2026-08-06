@@ -1,9 +1,9 @@
-const { getStore } = require('@netlify/blobs');
 const { getAuthedUser, isApproved } = require('./_auth');
+const { woodoraStore } = require('./_store');
 const seed = require('../../data/products.json');
 
 exports.handler = async (event) => {
-  const store = getStore('woodora');
+  const store = woodoraStore();
 
   if (event.httpMethod === 'GET') {
     const existing = await store.get('products', { type: 'json' });

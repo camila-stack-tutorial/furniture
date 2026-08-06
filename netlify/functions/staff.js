@@ -1,12 +1,12 @@
-const { getStore } = require('@netlify/blobs');
 const { getAuthedUser, role, clerk } = require('./_auth');
+const { woodoraStore } = require('./_store');
 
 // Keeps a simple directory of everyone who has ever signed in, so the
 // senior admin can see who's pending and approve/revoke access.
 // Actual permission is stored on the Clerk user (publicMetadata.role).
 
 exports.handler = async (event) => {
-  const store = getStore('woodora');
+  const store = woodoraStore();
   const user = await getAuthedUser(event);
   if (!user) return json(401, { error: 'Sign in required' });
   const callerRole = role(user);
