@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Shop — Crib Furniture</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+<header class="site-header" id="siteHeader"></header>
+
+<main>
+  <section class="page-hero">
+    <div class="container">
+      <p class="breadcrumb"><a href="/index.html">Home</a> / <span>Shop</span></p>
+      <h1 style="font-size:2rem;margin-top:8px">Full <span class="accent">Catalog</span></h1>
+    </div>
+  </section>
+
+  <section class="section" style="padding-top:26px">
+    <div class="container shop-layout">
+      <aside class="filters">
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <h3>Filters</h3>
+          <button class="clear-filters" id="clearFilters">Clear all</button>
+        </div>
+
+        <div class="filter-group">
+          <h4>Category</h4>
+          <div id="categoryFilters"></div>
+        </div>
+
+        <div class="filter-group">
+          <h4>Price</h4>
+          <div class="price-range">
+            <input type="range" id="priceRange" min="0" max="1000" step="10" value="1000">
+            <div class="price-values"><span>$0</span><span id="priceMax">$1000</span></div>
+          </div>
+        </div>
+
+        <div class="filter-group">
+          <h4>Color</h4>
+          <div class="swatches" id="colorFilters"></div>
+        </div>
+      </aside>
+
+      <div>
+        <div class="results-bar">
+          <span id="resultsCount" style="color:var(--ink-soft);font-size:.9rem"></span>
+          <select id="sortSelect">
+            <option value="default">Sort: Featured</option>
+            <option value="price-asc">Price: Low to High</option>
+            <option value="price-desc">Price: High to Low</option>
+            <option value="name-asc">Name: A–Z</option>
+          </select>
+        </div>
+        <div class="product-grid" id="shopGrid"></div>
+        <p id="noResults" style="display:none;text-align:center;padding:40px 0;color:var(--ink-soft)">No products match your filters.</p>
+        <nav class="pagination" id="pagination" aria-label="Product pages"></nav>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer" id="siteFooter"></footer>
+
+<script src="/js/data.js"></script>
+<script src="/js/common.js"></script>
+<script src="/js/shop.js"></script>
+</body>
+</html>

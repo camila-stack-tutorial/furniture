@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title id="pageTitle">Product — Crib Furniture</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+<header class="site-header" id="siteHeader"></header>
+
+<main>
+  <section class="page-hero">
+    <div class="container">
+      <p class="breadcrumb"><a href="/index.html">Home</a> / <a href="/shop.html">Shop</a> / <span id="crumbName">Product</span></p>
+    </div>
+  </section>
+
+  <section class="section" style="padding-top:20px">
+    <div class="container product-view" id="productView">
+      <!-- filled by JS -->
+    </div>
+  </section>
+
+  <section class="section" style="background:var(--cream-2)">
+    <div class="container">
+      <h2 class="related-title" style="margin-top:0">You may also <span class="accent">like</span></h2>
+      <div class="product-grid" id="relatedGrid"></div>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer" id="siteFooter"></footer>
+
+<script src="/js/data.js"></script>
+<script src="/js/common.js"></script>
+<script src="/js/product.js"></script>
+</body>
+</html>
