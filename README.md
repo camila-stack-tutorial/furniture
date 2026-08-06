@@ -17,38 +17,40 @@ HTML/CSS/JS so it deploys to Netlify with no build step.
   You can add/edit/delete products, bulk-import a spreadsheet, and edit site
   settings. Demo mode saves to `localStorage` in your browser only.
 
-## Making the admin panel "real" (shared, multi-user, Google-login)
+## Making the admin panel "real" (shared, multi-user, roles)
 
-Right now, without any setup, admin edits only persist in your own browser
-(`localStorage`) — that's the "demo mode" fallback. To make edits actually
-apply for every visitor, with real Google sign-in and a senior admin who
-approves staff, wire up two things:
+The admin panel uses its own built-in email/password auth — no third-party
+identity provider, and no custom domain required. Two things need to be set
+up in Netlify (Site settings → Environment variables):
 
 ### 1. Netlify Functions + Netlify Blobs (the "backend")
 Already scaffolded in `netlify/functions/`:
 - `products.js` — GET returns the live product list, POST (auth'd) overwrites it.
 - `settings.js` — same pattern for phone/socials/map/WhatsApp number.
-- `staff.js` — lists everyone who has signed in and lets the senior admin approve/revoke.
-- `_auth.js` — shared helper that verifies the Clerk session token on POST requests.
+- `staff.js` — senior-admin-only: lists staff and approves/revokes/promotes/demotes.
+- `auth-login.js` — verifies email/password, issues a signed session token.
+- `auth-register.js` — staff self-registration (lands as "pending").
+- `auth-me.js` — lets the frontend confirm the current session's role.
+- `_auth.js` — shared helper: password hashing (scrypt) + session token signing/verification (HMAC-SHA256).
 
-Deploy this repo to Netlify as-is (drag-and-drop or Git) and these functions
-go live automatically at `/.netlify/functions/...` — `netlify.toml` already
-points to the `netlify/functions` folder. Netlify Blobs needs no extra
-setup on Netlify's side.
+Set these two Blobs credentials so `_store.js` doesn't depend on Netlify's
+automatic Blobs injection (which can be unreliable):
+- `BLOBS_SITE_ID` — your Project ID (Project configuration → General).
+- `BLOBS_TOKEN` — a Personal Access Token (User settings → Applications).
 
-### 2. Clerk (Google sign-in + roles)
-1. Create a free project at clerk.com, enable the **Google** social connection.
-2. Copy your **Publishable key** into the `data-clerk-publishable-key` attribute
-   in `admin-login.html` and `admin.html` (replace `pk_test_REPLACE_WITH_YOUR_CLERK_PUBLISHABLE_KEY`).
-3. In Netlify, set two environment variables:
-   - `CLERK_SECRET_KEY` — from the Clerk dashboard.
-   - `CLERK_SENIOR_ADMIN_EMAIL` — the one email that should always have full access
-     (this person can approve/revoke everyone else from the admin **Staff access** tab).
-4. Redeploy. Now `/admin-login.html` shows a real Google sign-in. New sign-ins
-   land in "pending" until the senior admin approves them in the Staff tab.
+### 2. Built-in auth (no domain, no third-party sign-in)
+Set three more environment variables:
+- `SENIOR_ADMIN_EMAIL` — the permanent "bootstrap" senior admin's email. This
+  account always works even if the staff directory is empty or broken.
+- `SENIOR_ADMIN_PASSWORD` — that account's password.
+- `SESSION_SECRET` — a long random string used to sign session tokens
+  (generate one with e.g. `openssl rand -hex 32`).
 
-Until step 2 is done, `admin-login.html` automatically falls back to demo mode
-so you can still preview every admin screen.
+Redeploy after setting these. Now `/admin-login.html` shows a real email/password
+sign-in and a "Request access" form for new staff. New staff registrations land
+as "pending" until a senior admin approves them from the admin panel's **Staff
+access** tab, which also lets any senior admin promote another approved staff
+member to senior (or demote them back).
 
 ## Bulk product import
 
