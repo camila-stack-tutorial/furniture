@@ -1,0 +1,194 @@
+[
+  {
+    "id": "p001",
+    "name": "Caraway Sofa",
+    "category": "Sofas",
+    "color": "Beige",
+    "price": 780,
+    "oldPrice": 890,
+    "description": "A low-slung three-seater with a solid oak frame and boucle upholstery. Deep cushions and a relaxed recline make the Caraway the anchor of a slow-living living room.",
+    "details": ["Solid oak frame", "Boucle upholstery", "Seats 3", "W 210 x D 90 x H 78 cm", "Assembly required"],
+    "images": [
+      "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=900&q=80",
+      "https://images.unsplash.com/photo-1493663284031-b7e3aefcae8e?w=900&q=80",
+      "https://images.unsplash.com/photo-1567538096630-e0c55bd6374c?w=900&q=80"
+    ],
+    "featured": true
+  },
+  {
+    "id": "p002",
+    "name": "Marlow Accent Chair",
+    "category": "Chairs",
+    "color": "Rust",
+    "price": 240,
+    "oldPrice": null,
+    "description": "A sculptural accent chair with tapered walnut legs and a rust bouclé seat. Compact enough for a reading corner, striking enough to anchor a room.",
+    "details": ["Walnut legs", "Bouclé fabric", "Weight limit 120kg", "W 68 x D 70 x H 80 cm"],
+    "images": [
+      "https://images.unsplash.com/photo-1517705008128-361805f42e86?w=900&q=80",
+      "https://images.unsplash.com/photo-1567016432779-094069958ea5?w=900&q=80",
+      "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=900&q=80"
+    ],
+    "featured": true
+  },
+  {
+    "id": "p003",
+    "name": "Fen Table Lamp",
+    "category": "Lighting",
+    "color": "Natural",
+    "price": 65,
+    "oldPrice": 80,
+    "description": "A woven rattan shade over a stoneware base gives the Fen lamp a warm, diffused glow. Handmade, so no two are exactly alike.",
+    "details": ["Rattan shade", "Stoneware base", "E27 bulb (not included)", "H 42 cm"],
+    "images": [
+      "https://images.unsplash.com/photo-1507473885765-e6ed057f782c?w=900&q=80",
+      "https://images.unsplash.com/photo-1524634126442-357e0eac3c14?w=900&q=80",
+      "https://images.unsplash.com/photo-1517991104123-1d56a6e81ed9?w=900&q=80"
+    ],
+    "featured": true
+  },
+  {
+    "id": "p004",
+    "name": "Odera Lounge Sofa",
+    "category": "Sofas",
+    "color": "Charcoal",
+    "price": 950,
+    "oldPrice": null,
+    "description": "Modular two-piece sofa in brushed charcoal linen, built for lounging first. Reversible chaise so it can adapt to either side of the room.",
+    "details": ["Kiln-dried hardwood frame", "Brushed linen", "Reversible chaise", "W 260 x D 95 x H 80 cm"],
+    "images": [
+      "https://images.unsplash.com/photo-1540574163026-643ea20ade25?w=900&q=80",
+      "https://images.unsplash.com/photo-1556228453-efd6c1ff04f6?w=900&q=80",
+      "https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?w=900&q=80"
+    ],
+    "featured": false
+  },
+  {
+    "id": "p005",
+    "name": "Sable Dining Chair",
+    "category": "Chairs",
+    "color": "Brown",
+    "price": 145,
+    "oldPrice": null,
+    "description": "Curved leather sling seat on a bent-oak frame. Sold individually, designed to be mixed around a table.",
+    "details": ["Bent oak frame", "Full-grain leather", "Stackable", "W 52 x D 55 x H 76 cm"],
+    "images": [
+      "https://images.unsplash.com/photo-1519947486511-46149fa0a254?w=900&q=80",
+      "https://images.unsplash.com/photo-1503602642458-232111445657?w=900&q=80",
+      "https://images.unsplash.com/photo-1592078615290-033ee584e267?w=900&q=80"
+    ],
+    "featured": true
+  },
+  {
+    "id": "p006",
+    "name": "Birchwood Coffee Table",
+    "category": "Tables",
+    "color": "Natural",
+    "price": 320,
+    "oldPrice": 360,
+    "description": "A live-edge birch top on turned oak legs. Every piece has its own grain pattern, so the one you receive is unique to you.",
+    "details": ["Live-edge birch top", "Turned oak legs", "W 120 x D 60 x H 40 cm"],
+    "images": [
+      "https://images.unsplash.com/photo-1533090161767-e6ffed986c88?w=900&q=80",
+      "https://images.unsplash.com/photo-1549187774-b4e9b0445b41?w=900&q=80",
+      "https://images.unsplash.com/photo-1592078615290-033ee584e267?w=900&q=80"
+    ],
+    "featured": true
+  },
+  {
+    "id": "p007",
+    "name": "Linden Bookshelf",
+    "category": "Storage",
+    "color": "Walnut",
+    "price": 410,
+    "oldPrice": null,
+    "description": "Five-tier open shelving in solid walnut veneer with brass hardware accents. Built to hold real weight without sagging.",
+    "details": ["Walnut veneer", "Brass hardware", "5 shelves", "W 90 x D 35 x H 190 cm"],
+    "images": [
+      "https://images.unsplash.com/photo-1594620302200-9a762244a156?w=900&q=80",
+      "https://images.unsplash.com/photo-1567016526105-22da7c13161a?w=900&q=80",
+      "https://images.unsplash.com/photo-1595428774223-ef52624120d2?w=900&q=80"
+    ],
+    "featured": false
+  },
+  {
+    "id": "p008",
+    "name": "Poppy Floor Lamp",
+    "category": "Lighting",
+    "color": "Black",
+    "price": 155,
+    "oldPrice": null,
+    "description": "A slim iron floor lamp with a linen drum shade and a foot-pedal switch. Warm, directional light for reading corners.",
+    "details": ["Powder-coated iron", "Linen shade", "Foot switch", "H 155 cm"],
+    "images": [
+      "https://images.unsplash.com/photo-1524758631624-e2822e304c36?w=900&q=80",
+      "https://images.unsplash.com/photo-1543198126-cd0aec0affca?w=900&q=80",
+      "https://images.unsplash.com/photo-1513506003901-1e6a229e2d15?w=900&q=80"
+    ],
+    "featured": false
+  },
+  {
+    "id": "p009",
+    "name": "Colette Armchair",
+    "category": "Chairs",
+    "color": "Sage",
+    "price": 410,
+    "oldPrice": 460,
+    "description": "Wide-armed and deep-seated, upholstered in a sage cotton-blend with piped edges. A quiet statement piece for any reading nook.",
+    "details": ["Beechwood frame", "Cotton-blend upholstery", "W 85 x D 88 x H 90 cm"],
+    "images": [
+      "https://images.unsplash.com/photo-1567538096630-e0c55bd6374c?w=900&q=80",
+      "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=900&q=80",
+      "https://images.unsplash.com/photo-1567016432779-094069958ea5?w=900&q=80"
+    ],
+    "featured": false
+  },
+  {
+    "id": "p010",
+    "name": "Hearth Dining Table",
+    "category": "Tables",
+    "color": "Brown",
+    "price": 890,
+    "oldPrice": null,
+    "description": "Solid mango wood dining table for six, finished by hand to bring out the natural grain variation.",
+    "details": ["Solid mango wood", "Seats 6", "W 180 x D 90 x H 75 cm"],
+    "images": [
+      "https://images.unsplash.com/photo-1449247709967-d4461a6a6103?w=900&q=80",
+      "https://images.unsplash.com/photo-1615066390971-03e4e1f61b3f?w=900&q=80",
+      "https://images.unsplash.com/photo-1554295405-abb8fd54f153?w=900&q=80"
+    ],
+    "featured": false
+  },
+  {
+    "id": "p011",
+    "name": "Nook Side Table",
+    "category": "Tables",
+    "color": "Black",
+    "price": 95,
+    "oldPrice": null,
+    "description": "A compact steel-and-marble side table, small enough to tuck beside any armchair.",
+    "details": ["Marble top", "Powder-coated steel base", "W 40 x D 40 x H 50 cm"],
+    "images": [
+      "https://images.unsplash.com/photo-1499933374294-4584851497cc?w=900&q=80",
+      "https://images.unsplash.com/photo-1592078615290-033ee584e267?w=900&q=80",
+      "https://images.unsplash.com/photo-1549187774-b4e9b0445b41?w=900&q=80"
+    ],
+    "featured": false
+  },
+  {
+    "id": "p012",
+    "name": "Wicker Storage Basket",
+    "category": "Storage",
+    "color": "Natural",
+    "price": 48,
+    "oldPrice": 60,
+    "description": "Hand-woven seagrass basket with leather handles, useful as a side-table companion or standalone storage.",
+    "details": ["Seagrass weave", "Leather handles", "W 40 x D 40 x H 35 cm"],
+    "images": [
+      "https://images.unsplash.com/photo-1507473885765-e6ed057f782c?w=900&q=80",
+      "https://images.unsplash.com/photo-1524634126442-357e0eac3c14?w=900&q=80",
+      "https://images.unsplash.com/photo-1517991104123-1d56a6e81ed9?w=900&q=80"
+    ],
+    "featured": false
+  }
+]
