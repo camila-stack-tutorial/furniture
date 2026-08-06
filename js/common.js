@@ -86,7 +86,7 @@ function renderFooter() {
           <li><a href="/about.html">About us</a></li>
           <li><a href="/services.html">Services</a></li>
           <li><a href="/contact.html">Contact</a></li>
-          <li><a href="/admin-login.html">Staff login</a></li>
+          <li><a href="/admin-login.html" target="_blank" rel="noopener">Staff login</a></li>
         </ul>
       </div>
       <div>
