@@ -1,42 +1,39 @@
-const { getAuthedUser, role, clerk } = require('./_auth');
+const { getAuthedUser, role: roleOf } = require('./_auth');
 const { woodoraStore } = require('./_store');
 
-// Keeps a simple directory of everyone who has ever signed in, so the
-// senior admin can see who's pending and approve/revoke access.
-// Actual permission is stored on the Clerk user (publicMetadata.role).
+// Senior-admin-only: list the staff directory, and approve / revoke / promote / demote.
+// Registration happens in auth-register.js; login happens in auth-login.js.
 
 exports.handler = async (event) => {
-  const store = woodoraStore();
   const user = await getAuthedUser(event);
-  if (!user) return json(401, { error: 'Sign in required' });
-  const callerRole = role(user);
+  if (!user) return json(401, { error: 'Sign in required.' });
+  if (roleOf(user) !== 'senior') return json(403, { error: 'Only a senior admin can view or manage staff.' });
+
+  const store = woodoraStore();
 
   if (event.httpMethod === 'GET') {
-    // Any signed-in user can register themselves as "pending" on first login.
     const directory = (await store.get('staff', { type: 'json' })) || [];
-    const alreadyListed = directory.find(d => d.id === user.id);
-    if (!alreadyListed) {
-      directory.push({
-        id: user.id,
-        email: user.emailAddresses?.[0]?.emailAddress,
-        name: `${user.firstName || ''} ${user.lastName || ''}`.trim(),
-        requestedAt: new Date().toISOString()
-      });
-      await store.setJSON('staff', directory);
-    }
-    if (callerRole !== 'senior') return json(200, { self: { role: callerRole } });
-    return json(200, { self: { role: callerRole }, directory });
+    // Never send password hashes to the client, even to a senior admin.
+    const safe = directory.map(({ passwordHash, ...rest }) => rest);
+    return json(200, { directory: safe });
   }
 
   if (event.httpMethod === 'POST') {
-    if (callerRole !== 'senior') return json(403, { error: 'Only the senior admin can approve or revoke staff.' });
     let body;
-    try { body = JSON.parse(event.body); } catch (e) { return json(400, { error: 'Invalid JSON' }); }
-    const { userId, action } = body; // action: 'approve' | 'revoke'
-    if (!clerk) return json(500, { error: 'Clerk secret key not configured on the server.' });
-    await clerk.users.updateUserMetadata(userId, {
-      publicMetadata: { role: action === 'approve' ? 'staff' : null }
-    });
+    try { body = JSON.parse(event.body); } catch (e) { return json(400, { error: 'Invalid JSON body' }); }
+    const { userId, action } = body; // 'approve' | 'revoke' | 'promote' | 'demote'
+
+    const directory = (await store.get('staff', { type: 'json' })) || [];
+    const idx = directory.findIndex(d => d.id === userId);
+    if (idx < 0) return json(404, { error: 'Staff record not found.' });
+
+    if (action === 'approve') directory[idx].status = 'approved';
+    else if (action === 'revoke') directory[idx].status = 'revoked';
+    else if (action === 'promote') directory[idx].role = 'senior';
+    else if (action === 'demote') directory[idx].role = 'staff';
+    else return json(400, { error: 'Unknown action.' });
+
+    await store.setJSON('staff', directory);
     return json(200, { ok: true });
   }
 
