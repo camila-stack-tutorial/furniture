@@ -1,5 +1,6 @@
 const { getAuthedUser, role: roleOf } = require('./_auth');
 const { woodoraStore } = require('./_store');
+const { logActivity } = require('./_activity');
 
 // Senior-admin-only: list the staff directory, and approve / revoke / promote / demote.
 // Registration happens in auth-register.js; login happens in auth-login.js.
@@ -32,6 +33,14 @@ exports.handler = async (event) => {
     else if (action === 'promote') directory[idx].role = 'senior';
     else if (action === 'demote') directory[idx].role = 'staff';
     else return json(400, { error: 'Unknown action.' });
+
+    const logLines = {
+      approve: `approved staff member "${directory[idx].email}"`,
+      revoke: `revoked access for "${directory[idx].email}"`,
+      promote: `promoted "${directory[idx].email}" to senior admin`,
+      demote: `demoted "${directory[idx].email}" to staff`
+    };
+    await logActivity(store, user, logLines[action]);
 
     await store.setJSON('staff', directory);
     return json(200, { ok: true });
