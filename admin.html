@@ -5,6 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Admin — Crib Furniture</title>
 <meta name="robots" content="noindex">
+<meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/css/style.css">
 <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
@@ -18,6 +20,7 @@
     <a href="#import" data-tab="import">Import spreadsheet</a>
     <a href="#settings" data-tab="settings">Site settings</a>
     <a href="#staff" data-tab="staff">Staff access</a>
+    <a href="#activity" data-tab="activity">Activity</a>
     <a href="#" id="logoutBtn" style="margin-top:20px;color:#e7b9a4">Log out</a>
   </aside>
 
@@ -45,10 +48,12 @@
           <button class="btn btn-primary" id="addProductBtn">+ Add product</button>
         </div>
 
-        <table class="admin-table">
-          <thead><tr><th></th><th>Name</th><th>Category</th><th>Color</th><th>Price</th><th>Featured</th><th></th></tr></thead>
-          <tbody id="productsTbody"></tbody>
-        </table>
+        <div class="table-scroll">
+          <table class="admin-table">
+            <thead><tr><th></th><th>Name</th><th>Category</th><th>Color</th><th>Price</th><th>Featured</th><th></th></tr></thead>
+            <tbody id="productsTbody"></tbody>
+          </table>
+        </div>
       </section>
 
       <section id="tab-import" style="display:none">
@@ -84,10 +89,23 @@
       <section id="tab-staff" style="display:none">
         <h2 style="font-size:1.2rem">Staff access</h2>
         <p>Only a senior admin can approve, revoke, promote, or demote staff accounts.</p>
-        <table class="admin-table">
-          <thead><tr><th>Name</th><th>Email</th><th>Status</th><th>Role</th><th></th></tr></thead>
-          <tbody id="staffTbody"></tbody>
-        </table>
+        <div class="table-scroll">
+          <table class="admin-table">
+            <thead><tr><th>Name</th><th>Email</th><th>Status</th><th>Role</th><th></th></tr></thead>
+            <tbody id="staffTbody"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section id="tab-activity" style="display:none">
+        <h2 style="font-size:1.2rem">Activity log</h2>
+        <p>A record of admin changes — product edits, settings updates, and staff approvals — with who did it and when. Visible to senior admins only.</p>
+        <div class="table-scroll">
+          <table class="admin-table">
+            <thead><tr><th>Time</th><th>Who</th><th>Role</th><th>Action</th></tr></thead>
+            <tbody id="activityTbody"></tbody>
+          </table>
+        </div>
       </section>
 
     </div>
