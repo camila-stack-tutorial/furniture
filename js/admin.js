@@ -7,6 +7,14 @@ function toast(msg) {
   t._timer = setTimeout(() => t.classList.remove('show'), 2600);
 }
 
+// If the browser restores this page from bfcache (e.g. the user hits "back"
+// right after logging out), DOMContentLoaded won't fire again and the last
+// rendered admin screen could flash before any redirect happens. Force a
+// hard reload in that case so the auth check always runs fresh.
+window.addEventListener('pageshow', (e) => {
+  if (e.persisted) location.reload();
+});
+
 (async function () {
   let products = [];
   let settings = {};
@@ -42,6 +50,7 @@ function toast(msg) {
   document.getElementById('adminApp').style.display = 'block';
   if (currentRole !== 'senior') {
     document.querySelector('[data-tab="staff"]').style.display = 'none';
+    document.querySelector('[data-tab="activity"]').style.display = 'none';
   }
 
   document.getElementById('logoutBtn').addEventListener('click', (e) => {
@@ -58,10 +67,11 @@ function toast(msg) {
       e.preventDefault();
       document.querySelectorAll('.admin-side a[data-tab]').forEach(x => x.classList.remove('active'));
       a.classList.add('active');
-      ['products', 'import', 'settings', 'staff'].forEach(t => {
+      ['products', 'import', 'settings', 'staff', 'activity'].forEach(t => {
         document.getElementById(`tab-${t}`).style.display = t === a.dataset.tab ? 'block' : 'none';
       });
       if (a.dataset.tab === 'staff') loadStaff();
+      if (a.dataset.tab === 'activity') loadActivity();
     });
   });
 
@@ -193,10 +203,12 @@ function toast(msg) {
     const container = document.getElementById('importPreview');
     container.innerHTML = `
       <p><strong>${parsed.length}</strong> rows parsed. Review below, then confirm.</p>
-      <table class="admin-table">
-        <thead><tr><th>Name</th><th>Category</th><th>Price</th><th>Images</th></tr></thead>
-        <tbody>${parsed.map(p => `<tr><td>${p.name}</td><td>${p.category}</td><td>${p.price}</td><td>${p.images.length}</td></tr>`).join('')}</tbody>
-      </table>
+      <div class="table-scroll">
+        <table class="admin-table">
+          <thead><tr><th>Name</th><th>Category</th><th>Price</th><th>Images</th></tr></thead>
+          <tbody>${parsed.map(p => `<tr><td>${p.name}</td><td>${p.category}</td><td>${p.price}</td><td>${p.images.length}</td></tr>`).join('')}</tbody>
+        </table>
+      </div>
       <button class="btn btn-primary" id="confirmImportBtn" style="margin-top:16px">Add / update ${parsed.length} products</button>
     `;
     document.getElementById('confirmImportBtn').addEventListener('click', async () => {
@@ -279,5 +291,25 @@ function toast(msg) {
     const labels = { approve: 'Staff approved', revoke: 'Access revoked', promote: 'Promoted to senior', demote: 'Demoted to staff' };
     if (res.ok) { toast(labels[action] || 'Updated'); loadStaff(); }
     else toast('Could not update — check Netlify Function logs');
+  }
+
+  // ---------------- Activity log (senior admin only) ----------------
+  async function loadActivity() {
+    if (currentRole !== 'senior') return;
+    const tbody = document.getElementById('activityTbody');
+    tbody.innerHTML = '<tr><td colspan="4">Loading…</td></tr>';
+
+    const res = await fetch('/.netlify/functions/activity', { headers: { Authorization: `Bearer ${sessionToken}` } });
+    if (!res.ok) { tbody.innerHTML = '<tr><td colspan="4">Could not load activity log.</td></tr>'; return; }
+
+    const data = await res.json();
+    const rows = (data.log || []).map(entry => `
+      <tr>
+        <td style="white-space:nowrap">${new Date(entry.at).toLocaleString()}</td>
+        <td>${entry.actorEmail}</td>
+        <td>${entry.actorRole || '—'}</td>
+        <td>${entry.action}</td>
+      </tr>`).join('');
+    tbody.innerHTML = rows || '<tr><td colspan="4">No activity recorded yet.</td></tr>';
   }
 })();
